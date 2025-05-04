@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Manager Dashboard – MediStock</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="dashboard-page">
+  <div class="dashboard-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>MediStock</h2>
+        <p><strong>Welcome,</strong><br>{{ user.email }}</p>
+        <p>You are logged in as a <strong>{{ user.role }}</strong></p>
+      </div>
+      <ul class="menu">
+        <li><a href="{{ url_for('manager_dashboard') }}">📥 Pending Requests</a></li>
+        <li><a href="{{ url_for('manager_history') }}">📜 Request History</a></li>
+        <li><a href="{{ url_for('check_supplies') }}">📦 Check Supply Availability</a></li>
+        <li><a href="{{ url_for('notifications_page') }}">🔔 Notifications</a></li>
+        <li><a href="{{ url_for('logout') }}" class="logout-btn">🚪 Logout</a></li>
+      </ul>
+    </aside>
+
+    <!-- Main -->
+    <main class="dashboard-main">
+      <h1>📥 Pending Supply Requests</h1>
+
+      {% if requests %}
+      <table>
+        <thead>
+          <tr>
+            <th>Requested By</th>
+            <th>Role</th>
+            <th>Item</th>
+            <th>Quantity</th>
+            <th>Reason</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in requests %}
+          <tr>
+            <td>{{ r.user.email }}</td>
+            <td>{{ r.user.role }}</td>
+            <td>{{ r.item.name }}</td>
+            <td>{{ r.quantity }}</td>
+            <td>{{ r.reason }}</td>
+            <td>
+              <form action="{{ url_for('handle_request_action') }}" method="POST" style="display:inline-block;">
+                <input type="hidden" name="request_id" value="{{ r.request_id }}">
+                <input type="hidden" name="action" value="approved">
+                <button type="submit">✅ Approve</button>
+              </form>
+              <form action="{{ url_for('handle_request_action') }}" method="POST" style="display:inline-block;">
+                <input type="hidden" name="request_id" value="{{ r.request_id }}">
+                <input type="hidden" name="action" value="rejected">
+                <button type="submit">❌ Reject</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <p>No pending requests at the moment.</p>
+      {% endif %}
+    </main>
+
+  </div>
+</body>
+
+</html>

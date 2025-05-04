@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Your Notifications - MediStock</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dashboard-page">
+  <div class="dashboard-container">
+    <aside class="sidebar">
+      <h2>MediStock</h2>
+      <ul class="menu">
+        <li><a href="{{ url_for('dashboard') }}">🏠 Dashboard</a></li>
+        <li><a href="{{ url_for('notifications_page') }}">🔔 Notifications</a></li>
+        <li><a href="{{ url_for('logout') }}" class="logout-btn">🚪 Logout</a></li>
+      </ul>
+    </aside>
+
+    <main class="dashboard-main">
+      <h1>🔔 Your Notifications</h1>
+      <form action="{{ url_for('clear_notifications') }}" method="POST">
+        <button type="submit" class="clear-btn">Mark all as read</button>
+      </form>
+      
+      {% if notifications %}
+      <ul class="notifications-list">
+        {% for n in notifications %}
+          <li>
+            {% if 'APPROVED' in n.message %}
+              ✅ {{ n.message }}
+            {% elif 'REJECTED' in n.message %}
+              ❌ {{ n.message }}
+            {% else %}
+              🔔 {{ n.message }}
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+      
+      {% else %}
+        <p>No new notifications.</p>
+      {% endif %}
+    </main>
+  </div>
+</body>
+</html>

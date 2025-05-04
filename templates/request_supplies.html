@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Request Medical Supplies – MediStock</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="dashboard-page">
+  <div class="dashboard-container">
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>MediStock</h2>
+        <p><strong>Welcome,</strong><br>{{ user.email }}</p>
+        <p>You are logged in as a <strong>{{ user.role }}</strong></p>
+      </div>
+      <ul class="menu">
+        <li><a href="{{ url_for('dashboard') }}">🏠 Dashboard</a></li>
+        <li><a href="{{ url_for('check_supplies') }}">📦 Check Supplies</a></li>
+        <li><a href="{{ url_for('request_supplies') }}">📋 Request Supplies</a></li>
+        <li><a href="{{ url_for('logout') }}" class="logout-btn">🚪 Logout</a></li>
+      </ul>
+    </aside>
+
+    <main class="dashboard-main">
+      <h1>📋 Request Medical Supplies</h1>
+      <form action="{{ url_for('submit_supply_request') }}" method="POST" class="request-form">
+        <label for="item_id">Select Item:</label>
+        <select id="item_id" name="item_id" required>
+          <option value="" disabled selected>— Choose an item —</option>
+          {% for it in items %}
+          <option value="{{ it.item_id }}">
+            {{ it.name }} (In stock: {{ it.stock }})
+          </option>
+          {% endfor %}
+        </select>
+
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" name="quantity" min="1" placeholder="How many?" required />
+
+        <label for="reason">Reason for Request:</label>
+        <textarea id="reason" name="reason" rows="3" required></textarea>
+
+        <button type="submit">Submit Request</button>
+      </form>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for category, msg in messages %}
+      <div class="flash {{ category }}">{{ msg }}</div>
+      {% endfor %}
+      {% endwith %}
+    </main>
+  </div>
+</body>
+
+</html>

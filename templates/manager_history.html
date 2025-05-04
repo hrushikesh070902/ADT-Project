@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Request History - Manager</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dashboard-page">
+  <div class="dashboard-container">
+    <aside class="sidebar">
+      <h2>MediStock</h2>
+      <ul>
+        <li><a href="{{ url_for('manager_dashboard') }}">📥 Pending Requests</a></li>
+        <li><a href="{{ url_for('manager_history') }}">📜 Request History</a></li>
+        <li><a href="{{ url_for('logout') }}" class="logout-btn">🚪 Logout</a></li>
+      </ul>
+    </aside>
+
+    <main class="dashboard-main">
+      <h1>📜 Processed Requests</h1>
+      {% if requests %}
+      <table>
+        <tr>
+          <th>User</th><th>Role</th><th>Item</th><th>Qty</th><th>Reason</th><th>Status</th>
+        </tr>
+        {% for r in requests %}
+        <tr>
+          <td>{{ r.requested_by }}</td>
+          <td>{{ r.role }}</td>
+          <td>{{ r.item }}</td>
+          <td>{{ r.quantity }}</td>
+          <td>{{ r.reason }}</td>
+          <td>{{ r.status }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+      {% else %}
+        <p>No processed requests yet.</p>
+      {% endif %}
+    </main>
+  </div>
+</body>
+</html>

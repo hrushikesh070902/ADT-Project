@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>MediStock Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+
+<body class="dashboard-page">
+    <div class="dashboard-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>MediStock</h2>
+                <p><strong>Welcome,</strong><br>{{ user.email }}</p>
+                <p>You are logged in as a <strong>{{ user.role }}</strong></p>
+            </div>
+            <ul class="menu">
+                {% if user.role == 'Admin' %}
+                <li><a href="{{ url_for('add_item') }}">➕ Add New Item</a></li>
+                <li><a href="{{ url_for('manage_items') }}">✏️ Manage Items</a></li>
+                <li><a href="{{ url_for('manage_users') }}">👥 Manage Users</a></li>
+                <li><a href="#">📊 View Reports</a></li>
+                {% elif user.role == 'Nurse' %}
+                <li><a href="{{ url_for('check_supplies') }}">📦 Check Inventory</a></li>
+                <li><a href="{{ url_for('nurse_dashboard') }}">💉 Use Medical Supplies</a></li>
+                {% elif user.role == 'Manager' %}
+                <li><a href="{{ url_for('manager_dashboard') }}">🛒 Approve Orders</a></li>
+                <li><a href="{{ url_for('manager_history') }}">📜 Request History</a></li>
+                {% elif user.role == 'Doctor' %}
+                <li><a href="{{ url_for('request_equipment') }}">🛠 Request Special Equipment</a></li>
+                <li><a href="{{ url_for('check_supplies') }}">📦 Check Supply Availability</a></li>
+                <li><a href="{{ url_for('request_supplies') }}">📋 Request Medical Supplies</a></li>
+                {% endif %}
+            </ul>
+            <form action="{{ url_for('logout') }}" method="get">
+                <button class="logout-button" type="submit">🚪 Logout</button>
+            </form>
+        </aside>
+
+        <main class="dashboard-main">
+            <h1>Dashboard</h1>
+            <p>Welcome back, <strong>{{ user.email }}</strong>! Select an option from the menu.</p>
+        </main>
+    </div>
+</body>
+
+</html>

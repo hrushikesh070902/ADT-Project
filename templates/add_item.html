@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Add New Item – MediStock</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body class="dashboard-page">
+    <div class="dashboard-container">
+
+        <!-- Sidebar: reuse same nav as dashboard.html -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>MediStock</h2>
+                <p><strong>Welcome,</strong><br>{{ user.email }}</p>
+                <p>You are logged in as a <strong>{{ user.role }}</strong></p>
+            </div>
+            <ul class="menu">
+                <li><a href="{{ url_for('add_item') }}">➕ Add New Item</a></li>
+                <li><a href="{{ url_for('dashboard') }}">🏠 Dashboard</a></li>
+                <!-- other admin links… -->
+            </ul>
+            <form action="{{ url_for('logout') }}" method="get">
+                <button class="logout-button" type="submit">🚪 Logout</button>
+            </form>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <h1>➕ Add New Inventory Item</h1>
+            <form action="{{ url_for('add_item') }}" method="post" class="request-form">
+                <label for="name">Item Name:</label>
+                <input type="text" id="name" name="name" required />
+
+                <label for="stock">Initial Stock:</label>
+                <input type="number" id="stock" name="stock" required min="0" />
+
+                <label for="reorder_level">Reorder Level:</label>
+                <input type="number" id="reorder_level" name="reorder_level" required min="0" />
+
+                <button type="submit">Add Item</button>
+            </form>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, msg in messages %}
+            <div class="flash {{ category }}">{{ msg }}</div>
+            {% endfor %}
+            {% endwith %}
+        </main>
+
+    </div>
+</body>
+
+</html>

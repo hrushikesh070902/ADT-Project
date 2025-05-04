@@ -1,0 +1,81 @@
+<!-- templates/manage_users.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Manage Users – MediStock</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+
+<body class="dashboard-page">
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>MediStock</h2>
+                <p><strong>Welcome,</strong><br>{{ user.email }}</p>
+                <p>You are logged in as a <strong>{{ user.role }}</strong></p>
+            </div>
+            <ul class="menu">
+                <li><a href="{{ url_for('add_item') }}">➕ Add New Item</a></li>
+                <li><a href="{{ url_for('manage_items') }}">✏️ Manage Items</a></li>
+                <li><a href="{{ url_for('manage_users') }}">👥 Manage Users</a></li>
+                <li><a href="#">📊 View Reports</a></li>
+            </ul>
+            <form action="{{ url_for('logout') }}" method="get">
+                <button class="logout-button" type="submit">🚪 Logout</button>
+            </form>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard-main">
+            <h1>👥 Manage Users</h1>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% for category, msg in messages %}
+            <div class="flash {{ category }}">{{ msg }}</div>
+            {% endfor %}
+            {% endwith %}
+
+            {% if users %}
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in users %}
+                    <tr>
+                        <td>{{ u.user_id }}</td>
+                        <td>{{ u.email }}</td>
+                        <td>{{ u.role }}</td>
+                        <td>
+                            <!-- Edit button -->
+                            <a href="{{ url_for('edit_user', user_id=u.user_id) }}">
+                                <button type="button">✏️ Edit</button>
+                            </a>
+                            <!-- Delete form -->
+                            <form action="{{ url_for('delete_user', user_id=u.user_id) }}" method="POST"
+                                style="display:inline;"
+                                onsubmit="return confirm('Are you sure you want to delete {{ u.email }}?');">
+                                <button type="submit">🗑️ Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No users found.</p>
+            {% endif %}
+        </main>
+    </div>
+</body>
+
+</html>

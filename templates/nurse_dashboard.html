@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Nurse Dashboard – MediStock</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+
+<body class="dashboard-page">
+  <div class="dashboard-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-header">
+        <h2>MediStock</h2>
+        <p><strong>Welcome,</strong><br>{{ user.email }}</p>
+        <p>You are logged in as a <strong>{{ user.role }}</strong></p>
+      </div>
+      <ul class="menu">
+        <li><a href="{{ url_for('nurse_dashboard') }}">💉 Use Medical Supplies</a></li>
+        <li><a href="{{ url_for('check_supplies') }}">📦 Check Supply Availability</a></li>
+        <li><a href="{{ url_for('request_supplies') }}">📋 Request Supplies</a></li>
+        <li>
+          <a href="{{ url_for('notifications_page') }}">
+            🔔 Notifications
+            {% if notifications|length > 0 %}
+            <span class="badge">{{ notifications|length }}</span>
+            {% endif %}
+          </a>
+        </li>
+      </ul>
+      <form action="{{ url_for('logout') }}" method="get">
+        <button class="logout-button" type="submit">🚪 Logout</button>
+      </form>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="dashboard-main">
+      <h1>💉 Use Medical Supplies</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>Item</th>
+            <th>Stock</th>
+            <th>Reorder Level</th>
+            <th>Use</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in inventory %}
+          <tr id="row-{{ item.item_id }}">
+            <td>{{ item.name }}</td>
+            <td id="stock-{{ item.item_id }}">{{ item.stock }}</td>
+            <td>{{ item.reorder_level }}</td>
+            <td>
+              <input type="number" id="qty-{{ item.item_id }}" min="1" max="{{ item.stock }}" placeholder="Qty" />
+              <button type="button" onclick="useItem({{ item.item_id }})">Use</button>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </main>
+  </div>
+
+  <script>
+    function useItem(itemId) {
+      const qtyInput = document.getElementById(`qty-${itemId}`);
+      const quantity = parseInt(qtyInput.value, 10);
+
+      if (!quantity || quantity < 1) {
+        return alert("Please enter a valid quantity.");
+      }
+
+      fetch("{{ url_for('use_item') }}", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ item_id: itemId, quantity })
+      })
+        .then(res => res.json())
+        .then(data => {
+          if (data.success) {
+            // Update stock cell on success
+            document.getElementById(`stock-${itemId}`).innerText = data.new_stock;
+            qtyInput.value = "";
+          } else {
+            alert("Could not use item. Please try again.");
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Server error. Please try again later.");
+        });
+    }
+  </script>
+</body>
+
+</html>

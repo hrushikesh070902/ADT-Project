@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Supply Availability - MediStock</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dashboard-page">
+  <div class="dashboard-container">
+    <aside class="sidebar">
+      <h2>MediStock</h2>
+      <ul>
+        <li><a href="{{ url_for('manager_dashboard') }}">📥 Pending Requests</a></li>
+        <li><a href="{{ url_for('manager_history') }}">📜 Request History</a></li>
+        <li><a href="{{ url_for('check_supplies') }}">📦 Supply Availability</a></li>
+        <li><a href="{{ url_for('logout') }}" class="logout-btn">🚪 Logout</a></li>
+      </ul>
+    </aside>
+
+    <main class="dashboard-main">
+      <h1>📦 Supply Availability</h1>
+      <table>
+        <tr>
+          <th>Item</th>
+          <th>Stock</th>
+          <th>Reorder Level</th>
+        </tr>
+        {% for item in inventory %}
+        <tr {% if item.stock <= item.reorder_level %} style="background-color: #ffe6e6;" {% endif %}>
+          <td>{{ item.name }}</td>
+          <td>{{ item.stock }}</td>
+          <td>{{ item.reorder_level }}</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </main>
+  </div>
+</body>
+</html>
