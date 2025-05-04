@@ -19,10 +19,26 @@
                 <p>You are logged in as a <strong>{{ user.role }}</strong></p>
             </div>
             <ul class="menu">
-                <li><a href="{{ url_for('add_item') }}">➕ Add New Item</a></li>
-                <li><a href="{{ url_for('manage_items') }}">✏️ Manage Items</a></li>
-                <li><a href="#">👥 Manage Users</a></li>
-                <li><a href="#">📊 View Reports</a></li>
+                <li>
+                    <a href="{{ url_for('add_item') }}">
+                        ➕ Add New Item
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('manage_items') }}">
+                        ✏️ Manage Items
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ url_for('manage_users') }}">
+                        👥 Manage Users
+                    </a>
+                </li>
+                <li>
+                    <a href="#">
+                        📊 View Reports
+                    </a>
+                </li>
             </ul>
             <form action="{{ url_for('logout') }}" method="get">
                 <button class="logout-button" type="submit">🚪 Logout</button>
